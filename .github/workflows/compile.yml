@@ -1,0 +1,45 @@
+name: Build ELF
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+  pull_request:
+    
+jobs:
+  build-packages:
+    runs-on: ubuntu-latest
+    container: ps2dev/ps2dev:latest
+    steps:
+    - name: Install dependencies
+      run: |
+        apk add build-base git zip
+    - uses: actions/checkout@v2
+    - run: |
+        git fetch --prune --unshallow
+    
+    - name: Compile
+      run: |
+        make
+        
+    - name: Get short SHA
+      id: slug
+      run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
+
+        
+    - name: Upload artifacts
+      if: ${{ success() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: OSD-INJECTOR
+        path: |
+            *.elf
+    - name: Create release
+        if: github.ref == 'refs/heads/master'
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          title: "HDD Header injector"
+          files: |
+                 *.elf
