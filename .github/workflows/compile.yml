@@ -36,10 +36,10 @@ jobs:
             *.elf
     - name: Create release
       if: github.ref == 'refs/heads/master'
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          title: "HDD Header injector"
-          files: |
-                 *.elf
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        title: "HDD Header injector"
+        files: |
+              *.elf
