@@ -197,10 +197,11 @@ void InitPS2()
 }
 
 //Test parameters
-#define PARTY "hdd0:PP.SOFTDEV2.APPS"
+#define PARTY "hdd0:PP.SCUS-97328.HDL.GT4"
 #define SYSTEMCNF "mass:system.cnf"
 #define ICONSYS "mass:icon.sys"
 #define LISTICO "mass:list.ico"
+#define BOOTKELF "mass:boot.kelf"
 
 
 //Main function
@@ -219,12 +220,11 @@ int main(int argc, char *argv[])
 	//Waits for USB device
 	delay(5000);
 
-	scr_printf("OK1\n");
-
 	//Function argument setup
 	info.systemCnf = SYSTEMCNF;
 	info.iconSys = ICONSYS;
 	info.listIco = LISTICO;
+	info.bootKelf = BOOTKELF;
 	info.partition = PARTY;
 
 	scr_printf("Injecting to %s partition...\n",info.partition);
@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
 	else
 	scr_printf("Header injection succeeded\n");
 
-	scr_printf("Exiting\n");
+	scr_printf("Reset\n");
 	//fileXioUmount("pfs0:");
 
 	SleepThread();

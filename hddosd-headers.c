@@ -40,7 +40,7 @@ int readBufferfromHDD()
 		//Performs read operation for one sector
 		((hddAtaTransfer_t *)IOBuffer)->lba = partitionSector + i;
 		((hddAtaTransfer_t *)IOBuffer)->size = 1;
-		if ((result = fileXioDevctl("hdd0:", APA_DEVCTL_ATA_READ, IOBuffer, sizeof(hddAtaTransfer_t), dumpBuffer + 512 * i, 512)) < 0)	
+		if ((result = fileXioDevctl("hdd0:", APA_DEVCTL_ATA_READ, IOBuffer, sizeof(hddAtaTransfer_t), dumpBuffer + 512 * i, 512)) < 0)
 			break;
 	}
 
@@ -82,7 +82,7 @@ int getPartitionSector(char *partition)
 }
 
 //Function to write file to APA header
-int WriteFileToAPAHeader(char *fileName, char *partition, category_t category)
+int WriteFileToAPAHeader(char *fileName, category_t category)
 {
 
 	int result;
@@ -112,6 +112,12 @@ int WriteFileToAPAHeader(char *fileName, char *partition, category_t category)
 		dataOffset = 0x1800;
 		sizeOffset = 0x1024;
 		offsetOffset = 0x1020;
+		break;
+
+	case BOOT_KELF:
+		dataOffset = 0x111000;
+		sizeOffset = 0x1034;
+		offsetOffset = 0x1030;
 		break;
 	}
 	//Offset for data offset
@@ -169,17 +175,21 @@ int WriteAPAHeader(header_info_t info)
 				//Writes magic string to buffer
 				memcpy(dumpBuffer + 0x001000, HDL_HDR0, strlen(HDL_HDR0));
 
-				//If system.cnf buffer injection is succesful 
-				if ((result = WriteFileToAPAHeader(info.systemCnf, info.partition, SYSTEM_CNF)) >= 0)
+				//If system.cnf buffer injection is succesful
+				if ((result = WriteFileToAPAHeader(info.systemCnf, SYSTEM_CNF)) >= 0)
 				{
-					//If icon.sys buffer injection is succesful 
-					if ((result = WriteFileToAPAHeader(info.iconSys, info.partition, ICON_SYS)) >= 0)
+					//If icon.sys buffer injection is succesful
+					if ((result = WriteFileToAPAHeader(info.iconSys, ICON_SYS)) >= 0)
 					{
 						//If list.ico buffer injection is succesful
-						if ((result = WriteFileToAPAHeader(info.listIco, info.partition, LIST_ICO)) >= 0)
+						if ((result = WriteFileToAPAHeader(info.listIco, LIST_ICO)) >= 0)
 						{
-							//If above operations succeeded we can write buffer into HDD, not before!!!
-							result = writeBuffertoHDD();
+							//If boot.kelf buffer injection is succesful
+							if ((result = WriteFileToAPAHeader(info.bootKelf, BOOT_KELF)) >= 0)
+							{
+								//If above operations succeeded we can write buffer into HDD, not before!!!
+								result = writeBuffertoHDD();
+							}
 						}
 					}
 				}
