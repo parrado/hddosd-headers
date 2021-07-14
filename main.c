@@ -197,7 +197,7 @@ void InitPS2()
 }
 
 //Test parameters
-#define PARTY "hdd0:PP.SCUS-97328.HDL.GT4"
+#define PARTY "hdd0:PP.SCUS-97328.HDL.GT44"
 #define SYSTEMCNF "mass:system.cnf"
 #define ICONSYS "mass:icon.sys"
 #define LISTICO "mass:list.ico"

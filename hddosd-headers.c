@@ -175,24 +175,14 @@ int WriteAPAHeader(header_info_t info)
 				//Writes magic string to buffer
 				memcpy(dumpBuffer + 0x001000, HDL_HDR0, strlen(HDL_HDR0));
 
-				//If system.cnf buffer injection is succesful
-				if ((result = WriteFileToAPAHeader(info.systemCnf, SYSTEM_CNF)) >= 0)
-				{
-					//If icon.sys buffer injection is succesful
-					if ((result = WriteFileToAPAHeader(info.iconSys, ICON_SYS)) >= 0)
-					{
-						//If list.ico buffer injection is succesful
-						if ((result = WriteFileToAPAHeader(info.listIco, LIST_ICO)) >= 0)
-						{
-							//If boot.kelf buffer injection is succesful
-							if ((result = WriteFileToAPAHeader(info.bootKelf, BOOT_KELF)) >= 0)
-							{
-								//If above operations succeeded we can write buffer into HDD, not before!!!
-								result = writeBuffertoHDD();
-							}
-						}
-					}
-				}
+				//Writes found files to buffer
+				WriteFileToAPAHeader(info.systemCnf, SYSTEM_CNF);
+				WriteFileToAPAHeader(info.iconSys, ICON_SYS);
+				WriteFileToAPAHeader(info.listIco, LIST_ICO);
+				WriteFileToAPAHeader(info.bootKelf, BOOT_KELF);
+
+				//dumps buffer to HDD
+				result = writeBuffertoHDD();
 			}
 		}
 	}
